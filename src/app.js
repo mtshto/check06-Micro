@@ -3,7 +3,7 @@ const app = express()
 app.use(express.json())
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb+srv://check06:rL85KK3mWyOUnDQ2@cluster0.ziiwzun.mongodb.net/?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://userfinal:BXdGv43yjjfRUO1k@cluster0.ziiwzun.mongodb.net/?retryWrites=true&w=majority')
 
 app.use(express.urlencoded({
     extended: true

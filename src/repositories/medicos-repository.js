@@ -7,6 +7,7 @@ exports.get = async () => {
 }
 
 exports.create = async (data) => {
+    console.log(data);
     let medico = new Medico(data);
     await medico.save();
 }
