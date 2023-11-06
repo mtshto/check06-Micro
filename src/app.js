@@ -3,7 +3,7 @@ const app = express()
 app.use(express.json())
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://fiap:123456@localhost:27017/admin')
+mongoose.connect('mongodb+srv://check06:rL85KK3mWyOUnDQ2@cluster0.ziiwzun.mongodb.net/?retryWrites=true&w=majority')
 
 app.use(express.urlencoded({
     extended: true
@@ -21,7 +21,7 @@ const animaisRouter = require('./routers/animais-route')
 const index = require('./routers/index')
 
 app.use('/', index)
-app.use('/medicos', medicosRouter)
+app.use('/medico', medicosRouter)
 app.use('/tutores', tutoresRouter)
 app.use('/animais', animaisRouter)
 

@@ -1,4 +1,4 @@
-const repository = require("../repositories/produto-repository")
+const repository = require("../repositories/tutores-repository")
 const ValidationContract = require('../util/validator')
 
 exports.getAll = async (req, res, next) => {

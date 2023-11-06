@@ -1,60 +1,41 @@
-const repository = require("../repositories/tutor-repository");
-const ValidationContract = require('../util/validator');
+const mongoose = require('mongoose');
+const Tutor = mongoose.model('Tutor');
 
-exports.getAll = async (req, res, next) => {
-    const data = await repository.get();
+exports.get = async () => {
+    const result = await Tutor.find({
+        ativo: true
+    });
+    return result;
+}
 
-    if (data.length === 0) {
-        res.status(204).send();
-    } else {
-        res.status(200).send(data);
-    }
-};
+exports.create = async (data) => {
+    let tutor = new Tutor(data);
+    await tutor.save();
+}
 
-exports.post = async (req, res, next) => {
-    let contract = new ValidationContract();
-    contract.hasMinLen(req.body.nome, 4, 'O nome precisa de no mínimo 4 caracteres.');
-    contract.hasMaxLen(req.body.nome, 20, 'O nome pode ter no máximo 20 caracteres.');
-
-    try {
-        if (!contract.isValid()) {
-            res.status(400).send({
-                message: "Erro ao cadastrar as informações. Favor validar."
-            });
-            return;
+exports.delete = async (id) => {
+    await Tutor.findByIdAndUpdate(id, {
+        $set: {
+            ativo: false
         }
-        await repository.create(req.body);
-        res.status(201).send("Criado com sucesso!");
-    } catch (e) {
-        res.status(500).send({
-            message: "Erro no servidor, favor contatar o administrador."
-        });
-    }
-};
+    });
+}
 
-exports.update = async (req, res, next) => {
-    const id = req.params.id; // na rota daremos o apelido deste id
+exports.getById = async (id) => {
+    const result = await Tutor.findOne({
+        _id: id
+    });
+    return result;
+}
 
-    await repository.update(id, req.body);
-
-    // Você pode adicionar aqui o envio de email informando que sofreu uma alteração
-
-    res.status(200).send("Atualizado com sucesso!");
-};
-
-exports.delete = async (req, res, next) => {
-    const id = req.params.id; // na rota daremos o apelido deste id
-    await repository.delete(id); // Deletando um tutor pelo id
-    res.status(200).send('Removido com sucesso!');
-};
-
-exports.getById = async (req, res, next) => {
-    const id = req.params.id;
-    const data = await repository.getById(id);
-
-    if (data === null) {
-        res.status(404).send();
-    } else {
-        res.status(200).send(data);
-    }
-};
+exports.update = async (id, data) => {
+    await Tutor.findByIdAndUpdate(id, {
+        $set: {
+            nome: data.nome,
+            telefone: data.telefone,
+            celular: data.celular,
+            endereco: data.endereco,
+            ativo: data.ativo
+        }
+    });
+}
