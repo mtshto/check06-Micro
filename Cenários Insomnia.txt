@@ -1,0 +1,51 @@
+Post Medico
+
+GET http://localhost:3000/medico
+GET http://localhost:3000/medico/:id
+
+http://localhost:3000/medico
+{
+  "nome": "Dr. João Silva",
+  "crv": 123456,
+  "especialidades": "Cirurgia",
+  "diasSemana": "Segunda a Sexta",
+  "ativo": true
+}
+
+Post Tutores
+
+GET http://localhost:3000/tutores
+GET http://localhost:3000/tutores/:id
+
+http://localhost:3000/tutores
+{
+  "nome": "Maria da Silva",
+  "telefone": "1234567890",
+  "celular": "987654321",
+  "endereco": {
+    "logradouro": "Rua Principal",
+    "numero": "123",
+    "complemento": "Casa 1",
+    "bairro": "Centro",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "ativo": true
+}
+
+Get/Post Animais
+
+GET http://localhost:3000/animais
+GET http://localhost:3000/animais/:id
+
+POST http://localhost:3000/animais
+{
+  "nome": "Rex",
+  "raca": "Golden Retriever",
+  "especie": "Cachorro",
+  "idade": "4 anos",
+  "tutor": "65493d60b3a735ab705c2371", 
+  "ativo": true
+}
+
+
