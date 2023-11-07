@@ -7,10 +7,11 @@ exports.get = async () => {
 }
 
 exports.create = async (data) => {
-    console.log(data);
-    let medico = new Medico(data);
-    await medico.save();
+    const medico = new Medico(data);
+    const createdMedico = await medico.save();
+    return createdMedico; 
 }
+
 
 exports.delete = async (id) => {
     await Medico.findByIdAndUpdate(id, {

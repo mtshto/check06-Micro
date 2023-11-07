@@ -22,21 +22,26 @@ exports.post = async (req, res, next) => {
             });
             return;
         }
-        await repository.create(req.body);
-        res.status(200).send("Criado com sucesso!");
+        const createdMedico = await repository.create(req.body); // Adicione essa linha
+        res.status(201).send({
+            message: "Criado com sucesso",
+            id: createdMedico._id // ou outra informação relevante do médico
+        });
+         // Altere esta linha
     } catch (e) {
         console.error(e); // Adicione esta linha para imprimir o erro no console
         res.status(500).send({
             message: "Erro no servidor, favor contatar o administrador."
         });
     }
-}
+};
+
 
 
 exports.update = async (req, res, next) => {
     const id = req.params.id; //na rota daremos o apelido deste id
 
-    await repository.update(id, res.body);
+    await repository.update(id, req.body);
 
     //Enviar email informando que sofreu uma alteração
 

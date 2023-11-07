@@ -12,26 +12,29 @@ exports.getAll = async (req, res, next) => {
 
 exports.post = async (req, res, next) => {
     let contract = new ValidationContract();
-    contract.hasMinLen(req.body.nome, 4, 'O nome precisa de no mínimo 4 caracteres.')
-    contract.hasMaxLen(req.body.nome, 20, 'O nome pode ter no máximo 20 caracteres.')
+    contract.hasMinLen(req.body.nome, 4, 'O nome precisa de no mínimo 4 caracteres.');
+    contract.hasMaxLen(req.body.nome, 20, 'O nome pode ter no máximo 20 caracteres.');
 
     try {
         if (!contract.isValid()) {
             res.status(400).send({
-                message: "Erro ao cadastrar as informações. Favor validar"
+                message: "Erro ao cadastrar as informações. Favor validar."
             });
             return;
         }
-        await repository.create(req.body)
-        res.status(200).send("Criado com sucesso!")
+
+        const createdTutor = await repository.create(req.body);
+        res.status(201).send({
+            message: "Criado com sucesso!",
+            _id: createdTutor._id // Retorna o ID do tutor criado
+        });
     } catch (e) {
         res.status(500).send({
-            message: "Erro no setvidor, favor contactar o administrador"
-        })
+            message: "Erro no servidor, favor contatar o administrador."
+        });
     }
-
-
 }
+
 
 exports.update = async (req, res, next) => {
     const id = req.params.id; //na rota daremos o apelido deste id

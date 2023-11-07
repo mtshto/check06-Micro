@@ -48,4 +48,12 @@ POST http://localhost:3000/animais
   "ativo": true
 }
 
+http://localhost:3000/agendamentos
 
+{
+  "pet": "65493d60b3a735ab705c2371", // ID do pet
+  "tutor": "1a2b3c4d5e6f7g8h9i0j",  // ID do tutor
+  "medico": "5f4e3d2c1b0a9g8f7e6d5c4b3a2", // ID do médico
+  "especialidade": "Cardiologia",
+  "dataConsulta": "2023-11-15T14:30:00.000Z" // Data e hora da consulta
+}

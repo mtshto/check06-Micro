@@ -9,9 +9,10 @@ exports.get = async () => {
 }
 
 exports.create = async (data) => {
-    let tutor = new Tutor(data);
-    await tutor.save();
+    const tutor = new Tutor(data);
+    return await tutor.save();
 }
+
 
 exports.delete = async (id) => {
     await Tutor.findByIdAndUpdate(id, {

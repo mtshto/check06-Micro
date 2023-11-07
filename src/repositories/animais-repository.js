@@ -9,8 +9,8 @@ exports.get = async () => {
 }
 
 exports.create = async (data) => {
-    let animal = new Animal(data);
-    await animal.save();
+    const animal = new Animal(data);
+    return await animal.save();
 }
 
 exports.delete = async (id) => {

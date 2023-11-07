@@ -11,7 +11,7 @@ exports.getAll = async (req, res, next) => {
     }
 };
 
-exports.post = async (req, res, next) => {
+exports.post = async (req, res, next) => {7
     let contract = new ValidationContract();
     contract.hasMinLen(req.body.nome, 4, 'O nome precisa de no mínimo 4 caracteres.');
     contract.hasMaxLen(req.body.nome, 20, 'O nome pode ter no máximo 20 caracteres.');
@@ -23,14 +23,15 @@ exports.post = async (req, res, next) => {
             });
             return;
         }
-        await repository.create(req.body);
-        res.status(201).send("Criado com sucesso!");
+        const createdAnimal = await repository.create(req.body); // Adicione essa linha
+        res.status(201).send({ message: "Criado com sucesso", id: createdAnimal._id }); // Altere esta linha
     } catch (e) {
         res.status(500).send({
             message: "Erro no servidor, favor contatar o administrador."
         });
     }
 };
+
 
 exports.update = async (req, res, next) => {
     const id = req.params.id; // na rota daremos o apelido deste id

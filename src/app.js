@@ -13,18 +13,19 @@ app.use(express.urlencoded({
 require('./models/medicos')
 require('./models/tutores')
 require('./models/animais')
+require('./models/agendamento')
 
 //rotas
 const medicosRouter = require('./routers/medicos-route')
 const tutoresRouter = require('./routers/tutores-route')
 const animaisRouter = require('./routers/animais-route')
+const agendamentosRouter = require('./routers/agendamentos-route')
 const index = require('./routers/index')
 
 app.use('/', index)
 app.use('/medico', medicosRouter)
 app.use('/tutores', tutoresRouter)
 app.use('/animais', animaisRouter)
-
-
+app.use('/agendamentos', agendamentosRouter)
 
 module.exports = app;
