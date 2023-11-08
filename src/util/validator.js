@@ -1,32 +1,32 @@
-let erros = []
+let erros = [];
 
 function ValidationContract() {
-    erros = []
+    erros = [];
 }
 
 ValidationContract.prototype.isRequired = (value, message) => {
-    if (!value || value.lengh <= 0)
-        errors.push({
+    if (!value || value.length <= 0)
+        erros.push({
             message: message
-        })
-}
+        });
+};
 
 ValidationContract.prototype.hasMinLen = (value, min, message) => {
-    if(!value || value.lengh < min)
-    errors.push({
-        message: message
-    })
-}
+    if (!value || value.length < min)
+        erros.push({
+            message: message
+        });
+};
 
 ValidationContract.prototype.hasMaxLen = (value, max, message) => {
-    if(!value || value.lengh > max)
-    errors.push({
-        message: message
-    })
-}
+    if (!value || value.length > max)
+        erros.push({
+            message: message
+        });
+};
 
 ValidationContract.prototype.isValid = () => {
     return erros.length == 0;
-}
+};
 
-module.exports = ValidationContract
+module.exports = ValidationContract;

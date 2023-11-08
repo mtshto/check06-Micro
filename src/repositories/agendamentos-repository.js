@@ -22,6 +22,14 @@ exports.create = async (data) => {
             // Assuma que a primeira especialidade define a duração
             const duracao = medico.especialidades[0].duracaoPadrao;
 
+            // Verifique se já existe um agendamento para o mesmo médico na mesma data e horário
+            const dataAgendamento = new Date(data.data + ' ' + data.horario);
+            const agendamentoExistente = await this.getByMedicoDataHorario(data.medico, dataAgendamento);
+
+            if (agendamentoExistente) {
+                throw new Error('Conflito de agendamento. Já existe um agendamento na mesma data e horário.');
+            }
+
             // Crie o agendamento com a duração definida
             const agendamento = new Agendamento({ ...data, duracao });
             const result = await agendamento.save();
@@ -59,5 +67,12 @@ exports.update = async (id, data) => {
             horario: data.horario,
             ativo: data.ativo
         }
+    });
+}
+
+exports.getByMedicoDataHorario = async (medicoId, dataAgendamento) => {
+    return Agendamento.findOne({
+        medico: medicoId,
+        data: dataAgendamento
     });
 }

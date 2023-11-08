@@ -39,7 +39,25 @@ exports.post = async (req, res, next) => {
             return;
         }
 
-        const medico = await Medico.findById(req.body.medico);
+        const medicoId = req.body.medico;
+        const dataAgendamento = req.body.data; // Data como string
+        const horarioAgendamento = req.body.horario; // Horário como string
+
+        // Verifique se já existe um agendamento para o mesmo médico na mesma data e horário
+        const agendamentoExistente = await repository.getByMedicoDataHorario(
+            medicoId,
+            dataAgendamento,
+            horarioAgendamento
+        );
+
+        if (agendamentoExistente) {
+            res.status(409).send({
+                message: "Conflito de agendamento. Já existe um agendamento para o mesmo médico na mesma data e horário."
+            });
+            return;
+        }
+
+        const medico = await Medico.findById(medicoId);
         if (!medico) {
             res.status(400).send({
                 message: "Médico não encontrado"
@@ -53,11 +71,11 @@ exports.post = async (req, res, next) => {
             const nomeEspecialidade = medico.especialidades[0].nome;
 
             const agendamentoData = {
-                medico: req.body.medico,
+                medico: medicoId,
                 tutor: req.body.tutor,
                 animal: req.body.animal,
-                data: req.body.data,
-                horario: req.body.horario,
+                data: dataAgendamento,
+                horario: horarioAgendamento,
                 duracao: duracaoConsulta,
                 ativo: req.body.ativo
             };
@@ -70,7 +88,7 @@ exports.post = async (req, res, next) => {
                 id: agendamento._id,
                 nomeMedico: nomeMedico,
                 duracao: duracaoConsulta,
-                especialidade: nomeEspecialidade // Inclui o nome da especialidade no retorno
+                especialidade: nomeEspecialidade
             });
         } else {
             res.status(400).send({
@@ -78,11 +96,13 @@ exports.post = async (req, res, next) => {
             });
         }
     } catch (e) {
+        console.error('Erro inesperado:', e);
         res.status(500).send({
             message: "Erro no servidor, favor contatar o administrador"
         });
     }
 }
+
 
 exports.update = async (req, res, next) => {
     const id = req.params.id;
