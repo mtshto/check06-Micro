@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Agendamento = mongoose.model('Agendamento');
-const Medico = mongoose.model('Medicos'); // Certifique-se de importar o modelo dos médicos
-
+const Medico = mongoose.model('Medicos'); 
 exports.get = async () => {
     const result = await Agendamento.find({
         ativo: true
@@ -11,29 +10,24 @@ exports.get = async () => {
 
 exports.create = async (data) => {
     try {
-        // Busque o médico para obter a especialidade
         const medico = await Medico.findOne({ _id: data.medico });
         if (!medico) {
             throw new Error('Médico não encontrado');
         }
 
-        // Verifique se o médico tem uma especialidade definida
         if (medico.especialidades && medico.especialidades.length > 0) {
-            // Assuma que a primeira especialidade define a duração
             const duracao = medico.especialidades[0].duracaoPadrao;
 
-            // Verifique se já existe um agendamento para o mesmo médico na mesma data e horário
-            const dataAgendamento = new Date(data.data + ' ' + data.horario);
+            const dataAgendamento = new Date(data.data + 'T' + data.horario + ':00');
             const agendamentoExistente = await this.getByMedicoDataHorario(data.medico, dataAgendamento);
 
             if (agendamentoExistente) {
                 throw new Error('Conflito de agendamento. Já existe um agendamento na mesma data e horário.');
             }
 
-            // Crie o agendamento com a duração definida
             const agendamento = new Agendamento({ ...data, duracao });
             const result = await agendamento.save();
-            return result; // Retorne o resultado da criação (agendamento)
+            return result; 
         } else {
             throw new Error('Médico não possui especialidades definidas');
         }
@@ -41,6 +35,7 @@ exports.create = async (data) => {
         throw error;
     }
 }
+
 
 exports.delete = async (id) => {
     await Agendamento.findByIdAndUpdate(id, {
@@ -70,9 +65,17 @@ exports.update = async (id, data) => {
     });
 }
 
-exports.getByMedicoDataHorario = async (medicoId, dataAgendamento) => {
-    return Agendamento.findOne({
+exports.getByMedicoData = async (medicoId, dataAgendamento) => {
+    return Agendamento.find({
         medico: medicoId,
         data: dataAgendamento
+    });
+}
+
+exports.getByMedicoDataHorario = async (medicoId, dataAgendamento, horarioAgendamento) => {
+    return Agendamento.findOne({
+        medico: medicoId,
+        data: dataAgendamento,
+        horario: horarioAgendamento
     });
 }

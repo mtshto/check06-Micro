@@ -5,10 +5,17 @@ GET http://localhost:3000/medico/:id
 
 http://localhost:3000/medico
 {
-  "nome": "Dr. João Silva",
+  "nome": "Dr. Cleber Silva",
   "crv": 123456,
-  "especialidades": "Cirurgia",
+  "especialidades": [
+    {
+      "nome": "Cardio",
+      "duracaoPadrao": 45
+    }
+  ],
   "diasSemana": "Segunda a Sexta",
+  "horarioInicio": "10:00",
+  "horarioFim": "18:00",
   "ativo": true
 }
 
@@ -33,6 +40,7 @@ http://localhost:3000/tutores
   "ativo": true
 }
 
+
 Get/Post Animais
 
 GET http://localhost:3000/animais
@@ -40,20 +48,22 @@ GET http://localhost:3000/animais/:id
 
 POST http://localhost:3000/animais
 {
-  "nome": "Rex",
+  "nome": "XXXX",
   "raca": "Golden Retriever",
   "especie": "Cachorro",
   "idade": "4 anos",
-  "tutor": "65493d60b3a735ab705c2371", 
+  "tutor": "654bd20b1148f5c23f7246f1", 
   "ativo": true
 }
 
-http://localhost:3000/agendamentos
 
+http://localhost:3000/agendamentos
 {
-  "pet": "65493d60b3a735ab705c2371", // ID do pet
-  "tutor": "1a2b3c4d5e6f7g8h9i0j",  // ID do tutor
-  "medico": "5f4e3d2c1b0a9g8f7e6d5c4b3a2", // ID do médico
-  "especialidade": "Cardiologia",
-  "dataConsulta": "2023-11-15T14:30:00.000Z" // Data e hora da consulta
+  "medico": "654bd1c51148f5c23f724635",
+  "tutor": "654bbedfe72b838b41b12a0b",
+  "animal": "654bbf07e72b838b41b12a11",
+  "data": "2023-12-14",
+  "horario": "16:45",
+  "ativo": true
 }
+

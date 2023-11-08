@@ -16,7 +16,7 @@ const animalSchema = new Schema({
     },
     tutor: {
         type: Schema.Types.ObjectId,
-        ref: 'Tutor', // Referência ao modelo Tutor
+        ref: 'Tutor', 
     },
     ativo: {
         type: Boolean,

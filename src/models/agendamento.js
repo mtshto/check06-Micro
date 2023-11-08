@@ -18,7 +18,7 @@ const agendamentoSchema = new Schema({
         required: true,
     },
     data: {
-        type: String, // Data como string (sem horário)
+        type: String, 
         required: true,
     },
     horario: {

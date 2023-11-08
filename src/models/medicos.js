@@ -21,7 +21,7 @@ const medicoSchema = new Schema({
         type: Number,
         required: [true, "CRV é obrigatório"],
     },
-    especialidades: [especialidadeSchema], // Uma lista de especialidades
+    especialidades: [especialidadeSchema], 
     diasSemana: {
         type: String,
     },
@@ -29,6 +29,14 @@ const medicoSchema = new Schema({
         type: Boolean,
         required: true,
         default: true,
+    },
+    horarioInicio: {
+        type: String,
+        required: true,
+    },
+    horarioFim: {
+        type: String, 
+        required: true,
     },
 });
 

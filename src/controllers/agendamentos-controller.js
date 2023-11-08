@@ -10,17 +10,14 @@ exports.getAll = async (req, res, next) => {
         return;
     }
 
-    // Mapeie os agendamentos para incluir a duração da consulta e o nome da especialidade
     const agendamentosComDuracaoEspecialidade = await Promise.all(agendamentos.map(async (agendamento) => {
-        // Obtenha o médico associado ao agendamento
         const medico = await Medico.findById(agendamento.medico);
         if (medico && medico.especialidades && medico.especialidades.length > 0) {
-            // Use a duração da primeira especialidade do médico
             agendamento.duracao = medico.especialidades[0].duracaoPadrao;
-            agendamento.especialidade = medico.especialidades[0].nome; // Inclui o nome da especialidade
+            agendamento.especialidade = medico.especialidades[0].nome; 
         } else {
-            agendamento.duracao = 0; // Ou outro valor padrão, se necessário
-            agendamento.especialidade = "Especialidade não definida"; // Ou outra mensagem
+            agendamento.duracao = 0; 
+            agendamento.especialidade = "Especialidade não definida"; 
         }
         return agendamento;
     }));
@@ -29,87 +26,88 @@ exports.getAll = async (req, res, next) => {
 }
 
 exports.post = async (req, res, next) => {
-    let contract = new ValidationContract();
-
     try {
+        const contract = new ValidationContract();
+
         if (!contract.isValid()) {
-            res.status(400).send({
-                message: "Erro ao cadastrar as informações. Favor validar"
+            return res.status(400).send({
+                message: "Erro ao cadastrar as informações. Favor validar."
             });
-            return;
         }
 
         const medicoId = req.body.medico;
-        const dataAgendamento = req.body.data; // Data como string
-        const horarioAgendamento = req.body.horario; // Horário como string
-
-        // Verifique se já existe um agendamento para o mesmo médico na mesma data e horário
-        const agendamentoExistente = await repository.getByMedicoDataHorario(
-            medicoId,
-            dataAgendamento,
-            horarioAgendamento
-        );
-
-        if (agendamentoExistente) {
-            res.status(409).send({
-                message: "Conflito de agendamento. Já existe um agendamento para o mesmo médico na mesma data e horário."
-            });
-            return;
-        }
+        const dataAgendamento = req.body.data; 
+        const horarioAgendamento = req.body.horario; 
 
         const medico = await Medico.findById(medicoId);
+
         if (!medico) {
-            res.status(400).send({
+            return res.status(400).send({
                 message: "Médico não encontrado"
             });
-            return;
         }
 
-        if (medico.especialidades && medico.especialidades.length > 0) {
-            // Use a duração da primeira especialidade do médico
-            const duracaoConsulta = medico.especialidades[0].duracaoPadrao;
-            const nomeEspecialidade = medico.especialidades[0].nome;
+        const horarioInicioMedico = medico.horarioInicio;
+        const horarioFimMedico = medico.horarioFim;
 
-            const agendamentoData = {
-                medico: medicoId,
-                tutor: req.body.tutor,
-                animal: req.body.animal,
-                data: dataAgendamento,
-                horario: horarioAgendamento,
-                duracao: duracaoConsulta,
-                ativo: req.body.ativo
-            };
-
-            const agendamento = await repository.create(agendamentoData);
-            const nomeMedico = medico.nome;
-
-            res.status(200).send({
-                message: "Criado com sucesso",
-                id: agendamento._id,
-                nomeMedico: nomeMedico,
-                duracao: duracaoConsulta,
-                especialidade: nomeEspecialidade
-            });
-        } else {
-            res.status(400).send({
-                message: "Médico não possui especialidades definidas"
+        if (horarioAgendamento < horarioInicioMedico || horarioAgendamento > horarioFimMedico) {
+            return res.status(409).send({
+                message: "Conflito de agendamento. O horário do agendamento está fora do horário de atendimento do médico."
             });
         }
+
+        const dataAgendamentoFormatada = new Date(dataAgendamento + 'T' + horarioAgendamento + ':00');
+
+        const agendamentoExistente = await repository.getByMedicoDataHorario(medicoId, dataAgendamento, horarioAgendamento);
+
+        if (agendamentoExistente) {
+            return res.status(409).send({
+                message: "Conflito de agendamento. Já existe um agendamento na mesma data e horário."
+            });
+        }
+
+        const nomeEspecialidade = medico.especialidades[0].nome;
+
+        const agendamentoData = {
+            medico: medicoId,
+            tutor: req.body.tutor,
+            animal: req.body.animal,
+            data: dataAgendamento,
+            horario: horarioAgendamento,
+            duracao: medico.especialidades[0].duracaoPadrao,
+            ativo: req.body.ativo
+        };
+
+        const agendamento = await repository.create(agendamentoData);
+        const nomeMedico = medico.nome;
+
+        return res.status(200).send({
+            message: "Criado com sucesso",
+            id: agendamento._id,
+            nomeMedico: nomeMedico,
+            duracao: medico.especialidades[0].duracaoPadrao,
+            especialidade: nomeEspecialidade
+        });
     } catch (e) {
         console.error('Erro inesperado:', e);
-        res.status(500).send({
+        return res.status(500).send({
             message: "Erro no servidor, favor contatar o administrador"
         });
     }
 }
 
+function somarHorario(horario, minutos) {
+    const [horas, minutosOriginais] = horario.split(':').map(Number);
+    const minutosTotais = horas * 60 + minutosOriginais + minutos;
+    const horasFinais = Math.floor(minutosTotais / 60);
+    const minutosFinais = minutosTotais % 60;
+    return `${String(horasFinais).padStart(2, '0')}:${String(minutosFinais).padStart(2, '0')}`;
+}
 
 exports.update = async (req, res, next) => {
     const id = req.params.id;
 
     await repository.update(id, req.body);
-
-    // Adicione aqui a lógica para enviar um email informando a alteração
 
     res.status(200).send("Atualizado com sucesso!");
 }

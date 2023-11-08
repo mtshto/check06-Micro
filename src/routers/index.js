@@ -18,8 +18,6 @@ router.post('/', (req, res, next) => {
 })
 
 router.put('/', (req, res, next) => {
-    //console.log(req.log)
-
     const retorno = {
         message: "Atualizado",
         body: req.body

@@ -2,16 +2,13 @@ const mongoose = require('mongoose');
 const Medico = mongoose.model('Medicos');
 
 exports.get = async () => {
-    const result = await Medico.find({ ativo: true });
-    return result;
-}
+    return await Medico.find({ ativo: true });
+};
 
 exports.create = async (data) => {
     const medico = new Medico(data);
-    const createdMedico = await medico.save();
-    return createdMedico; 
-}
-
+    return await medico.save();
+};
 
 exports.delete = async (id) => {
     await Medico.findByIdAndUpdate(id, {
@@ -19,12 +16,11 @@ exports.delete = async (id) => {
             ativo: false
         }
     });
-}
+};
 
 exports.getById = async (id) => {
-    const result = await Medico.findOne({ _id: id });
-    return result;
-}
+    return await Medico.findById(id);
+};
 
 exports.update = async (id, data) => {
     await Medico.findByIdAndUpdate(id, {
@@ -33,7 +29,9 @@ exports.update = async (id, data) => {
             crv: data.crv,
             especialidades: data.especialidades,
             diasSemana: data.diasSemana,
-            ativo: data.ativo
+            ativo: data.ativo,
+            horarioInicio: data.horarioInicio,
+            horarioFim: data.horarioFim
         }
     });
-}
+};

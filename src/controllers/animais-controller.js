@@ -23,8 +23,8 @@ exports.post = async (req, res, next) => {7
             });
             return;
         }
-        const createdAnimal = await repository.create(req.body); // Adicione essa linha
-        res.status(201).send({ message: "Criado com sucesso", id: createdAnimal._id }); // Altere esta linha
+        const createdAnimal = await repository.create(req.body); 
+        res.status(201).send({ message: "Criado com sucesso", id: createdAnimal._id }); 
     } catch (e) {
         res.status(500).send({
             message: "Erro no servidor, favor contatar o administrador."
@@ -34,18 +34,16 @@ exports.post = async (req, res, next) => {7
 
 
 exports.update = async (req, res, next) => {
-    const id = req.params.id; // na rota daremos o apelido deste id
+    const id = req.params.id; 
 
     await repository.update(id, req.body);
-
-    // Você pode adicionar aqui o envio de email informando que sofreu uma alteração
 
     res.status(200).send("Atualizado com sucesso!");
 };
 
 exports.delete = async (req, res, next) => {
-    const id = req.params.id; // na rota daremos o apelido deste id
-    await repository.delete(id); // Deletando um animal pelo id
+    const id = req.params.id; 
+    await repository.delete(id); 
     res.status(200).send('Removido com sucesso!');
 };
 

@@ -26,7 +26,7 @@ exports.post = async (req, res, next) => {
         const createdTutor = await repository.create(req.body);
         res.status(201).send({
             message: "Criado com sucesso!",
-            _id: createdTutor._id // Retorna o ID do tutor criado
+            _id: createdTutor._id
         });
     } catch (e) {
         res.status(500).send({
@@ -37,18 +37,15 @@ exports.post = async (req, res, next) => {
 
 
 exports.update = async (req, res, next) => {
-    const id = req.params.id; //na rota daremos o apelido deste id
+    const id = req.params.id;
 
     await repository.update(id, res.body);
-
-    //Enviar email informando que sofreu uma alteração
-
     res.status(200).send("Atualizado com sucesso!")
 };
 
 exports.delete = async (req, res, next) => {
-    const id = req.params.id; //na rota daremos o apelido deste id
-    await repository.delete(id); //Deletando um produto pelo id
+    const id = req.params.id;
+    await repository.delete(id);
     res.status(200).send('Removido com sucesso!')
 }
 
